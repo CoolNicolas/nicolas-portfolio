@@ -1,0 +1,17 @@
+NICOLAS LIN — PORTFOLIO V2
+=========================
+
+1. Extract nicolas-portfolio-v2.zip somewhere on your PC.
+2. Open the extracted nicolas-portfolio-v2 folder in VS Code.
+3. Open Terminal > New Terminal, then run:
+
+   npm install
+   npm run dev
+
+4. Ctrl+click the localhost URL displayed in the terminal.
+5. Edit src/content.ts to update timeline entries, project links, and email.
+6. When ready, deploy the folder's GitHub repository to Vercel.
+
+TIP: Keep the OLD portfolio folder until you're happy with this one.
+
+No separate Node.js installation is needed if your previous portfolio already ran with npm.
