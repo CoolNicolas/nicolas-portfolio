@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { ArrowDown, ArrowRight, ArrowUpRight, Check, Github, Mail, Menu, X } from 'lucide-react'
-import { interests, milestones, profile, type JourneyKind, type Milestone } from './content'
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, Github, Mail, Menu, X } from 'lucide-react'
+import { interests, milestones, profile, type JourneyKind, type Milestone, type ProjectDemo as ProjectDemoData } from './content'
 
 const kinds: Array<'All' | JourneyKind> = ['All', 'Project', 'Learning', 'Education']
 
@@ -9,12 +9,112 @@ function SmallLabel({ number, children }: { number: string; children: string }) 
   return <div className="section-kicker"><span>{number}</span><span className="kicker-rule" /><span>{children}</span></div>
 }
 
+
+/** A compact, reusable visual gallery for expanded project milestones. */
+function ProjectDemo({ demo, title }: { demo: ProjectDemoData; title: string }) {
+  const [index, setIndex] = useState(0)
+  const media = demo.media[index]
+  const hasMultiple = demo.media.length > 1
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  // Play the selected demo on opening. Modern browsers generally require
+  // muted autoplay; viewers can turn the sound on with the native controls.
+  useEffect(() => {
+    if (media?.type !== 'video') return
+    const video = videoRef.current
+    if (!video) return
+    video.currentTime = 0
+    video.muted = true
+    void video.play().catch(() => {
+      // The controls remain available if autoplay is blocked by the browser.
+    })
+    return () => {
+      video.pause()
+      video.currentTime = 0
+    }
+  }, [media?.src, media?.type])
+
+  function previous() {
+    setIndex((current) => (current - 1 + demo.media.length) % demo.media.length)
+  }
+
+  function next() {
+    setIndex((current) => (current + 1) % demo.media.length)
+  }
+
+  if (!media) return null
+
+  return (
+    <div className="project-demo" aria-label={`${title} visual walkthrough`}>
+      <div className="demo-header">
+        <div>
+          <span className="demo-kicker">PROJECT IN FOCUS</span>
+          <h4>See it <em>in action.</em></h4>
+        </div>
+        <span className="demo-counter" aria-live="polite">{String(index + 1).padStart(2, '0')} / {String(demo.media.length).padStart(2, '0')}</span>
+      </div>
+      {demo.intro && <p className="demo-description">{demo.intro}</p>}
+      <div className="demo-stage">
+        {media.type === 'video' ? (
+          <video ref={videoRef} key={media.src} className="demo-main-media" src={media.src} poster={media.poster} autoPlay muted controls playsInline preload="metadata" aria-label={media.alt} />
+        ) : (
+          <a href={media.src} target="_blank" rel="noopener noreferrer" title="Open full-size screenshot in a new tab" className="demo-image-link">
+            <img key={media.src} className="demo-main-media" src={media.src} alt={media.alt} loading="lazy" />
+            <span className="demo-open-photo">VIEW FULL SIZE <ArrowUpRight size={14} aria-hidden="true" /></span>
+          </a>
+        )}
+      </div>
+      <div className="demo-caption-row">
+        <span className="demo-caption" aria-live="polite">{media.caption}{media.type === 'video' && <span className="demo-playback-note">AUTOPLAYS MUTED</span>}</span>
+        {hasMultiple && (
+          <div className="demo-navigation">
+            <button type="button" className="demo-arrow" onClick={previous} aria-label="Previous demo image"><ArrowLeft size={17} /></button>
+            <button type="button" className="demo-arrow" onClick={next} aria-label="Next demo image"><ArrowRight size={17} /></button>
+          </div>
+        )}
+      </div>
+      {hasMultiple && (
+        <div className="demo-thumbnails" role="group" aria-label="Choose a screenshot or demo">
+          {demo.media.map((item, itemIndex) => (
+            <button
+              type="button"
+              key={`${item.src}-${itemIndex}`}
+              className={`demo-thumbnail ${itemIndex === index ? 'is-current' : ''}`}
+              aria-label={`Show ${item.caption}`}
+              aria-pressed={itemIndex === index}
+              onClick={() => setIndex(itemIndex)}
+            >
+              {item.type === 'video' ? <span className="demo-thumbnail-video">PLAY VIDEO</span> : <img src={item.src} alt="" loading="lazy" />}
+              <span className="demo-thumb-number">{String(itemIndex + 1).padStart(2, '0')}</span>
+            </button>
+          ))}
+        </div>
+      )}
+      {demo.liveUrl && (
+        <a href={demo.liveUrl} className="demo-live-link" target="_blank" rel="noopener noreferrer">Try the live demo <ArrowUpRight size={14} aria-hidden="true" /></a>
+      )}
+    </div>
+  )
+}
+
 function MilestoneRow({ milestone, isExpanded, onToggle }: { milestone: Milestone; isExpanded: boolean; onToggle: () => void }) {
   const reducedMotion = useReducedMotion()
   const panelId = `panel-${milestone.id}`
+  const milestoneRef = useRef<HTMLElement>(null)
+
+  // Exit animations keep an expanded panel in the DOM briefly. Pause and
+  // rewind immediately when the user closes a milestone (or opens another).
+  useEffect(() => {
+    if (isExpanded) return
+    const video = milestoneRef.current?.querySelector('video')
+    if (video) {
+      video.pause()
+      video.currentTime = 0
+    }
+  }, [isExpanded])
 
   return (
-    <article className={`milestone-row ${isExpanded ? 'is-expanded' : ''}`} id={`milestone-${milestone.id}`}>
+    <article ref={milestoneRef} className={`milestone-row ${isExpanded ? 'is-expanded' : ''}`} id={`milestone-${milestone.id}`}>
       <div className="milestone-date"><span>{milestone.date}</span><span className="timeline-dot" aria-hidden="true" /></div>
       <div className="milestone-content">
         <button
@@ -28,6 +128,8 @@ function MilestoneRow({ milestone, isExpanded, onToggle }: { milestone: Mileston
             <span className="milestone-kind">{milestone.kind}</span>
             <span className="milestone-title">{milestone.title}</span>
             <span className="milestone-summary">{milestone.summary}</span>
+            {milestone.demo && <span className="milestone-demo-hint">VIEW PROJECT DEMO <ArrowRight size={13} aria-hidden="true" /></span>}
+            {milestone.certificate && <span className="milestone-demo-hint">VIEW CERTIFICATE <ArrowRight size={13} aria-hidden="true" /></span>}
           </span>
           <span className="milestone-action" aria-hidden="true"><span className="action-circle">{isExpanded ? <X size={18} strokeWidth={1.3} /> : <ArrowUpRight size={21} strokeWidth={1.35} />}</span></span>
         </button>
@@ -43,7 +145,22 @@ function MilestoneRow({ milestone, isExpanded, onToggle }: { milestone: Mileston
               transition={{ duration: reducedMotion ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="milestone-expand-inner">
+                {milestone.certificate && (
+                  <figure className="milestone-certificate">
+                    <div className="certificate-kicker">CERTIFICATE OF COMPLETION</div>
+                    <img src={milestone.certificate.src} alt={milestone.certificate.alt} loading="eager" decoding="async" />
+                    <figcaption>
+                      <span>{milestone.certificate.caption}</span>
+                      {milestone.certificate.verifyUrl && (
+                        <a href={milestone.certificate.verifyUrl} target="_blank" rel="noopener noreferrer">
+                          Verify certificate <ArrowUpRight size={14} aria-hidden="true" />
+                        </a>
+                      )}
+                    </figcaption>
+                  </figure>
+                )}
                 <p>{milestone.story}</p>
+                {milestone.demo && <ProjectDemo demo={milestone.demo} title={milestone.title} />}
                 <div className="milestone-tags" aria-label="Related topics">
                   {milestone.tags.map((tag) => <span key={tag}>{tag}</span>)}
                 </div>
@@ -66,7 +183,7 @@ function MilestoneRow({ milestone, isExpanded, onToggle }: { milestone: Mileston
 
 function Journey() {
   const [kind, setKind] = useState<'All' | JourneyKind>('All')
-  const [activeId, setActiveId] = useState<string | null>(milestones[0].id)
+  const [activeId, setActiveId] = useState<string | null>(null)
   const visible = kind === 'All' ? milestones : milestones.filter((entry) => entry.kind === kind)
 
   function chooseKind(nextKind: 'All' | JourneyKind) {
@@ -206,12 +323,10 @@ export default function App() {
               <div className="hero-main">
                 <span className="hero-eyebrow">HELLO, I'M</span>
                 <h1 id="hero-name">Nicolas<br /><em>Lin.</em></h1>
-                <p className="hero-lead">
-                  Computer Science Student at Queen's University
-                </p>
+                <p className="hero-lead">Computer Science Student at Queen's University</p>
                 <div className="hero-credentials">
                   <span>GPA 3.9 / 4.3</span>
-                  <span>Software Development & AI</span>
+                  <span>Software Development &amp; AI</span>
                   <span>Open to Tech Opportunities</span>
                 </div>
                 <p className="hero-description">{profile.introduction}</p>

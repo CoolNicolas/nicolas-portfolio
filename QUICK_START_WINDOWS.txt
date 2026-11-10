@@ -15,3 +15,5 @@ NICOLAS LIN — PORTFOLIO V2
 TIP: Keep the OLD portfolio folder until you're happy with this one.
 
 No separate Node.js installation is needed if your previous portfolio already ran with npm.
+
+NEW IN THIS VERSION: The CS50 certificate is an image inside the CS50 milestone. All three demo videos autoplay muted when expanded and stop when closed.

@@ -22,6 +22,32 @@ export const profile = {
 
 export type JourneyKind = 'Project' | 'Learning' | 'Education'
 
+/**
+ * Media is displayed in the expandable project's gallery.
+ * Screenshots and GIFs use type 'image'; MP4/WebM use type 'video'.
+ * Host your own media in public/demos/... and point src to /demos/...
+ */
+export type DemoMedia = {
+  type: 'image' | 'video'
+  src: string
+  alt: string
+  caption: string
+  poster?: string
+}
+
+export type ProjectDemo = {
+  intro?: string
+  media: DemoMedia[]
+  liveUrl?: string
+}
+
+export type MilestoneCertificate = {
+  src: string
+  alt: string
+  caption: string
+  verifyUrl?: string
+}
+
 export type Milestone = {
   id: string
   number: string
@@ -31,6 +57,8 @@ export type Milestone = {
   summary: string
   story: string
   tags: string[]
+  demo?: ProjectDemo
+  certificate?: MilestoneCertificate
   link?: {
     label: string
     href: string
@@ -50,6 +78,48 @@ export const milestones: Milestone[] = [
     story:
       'I built a read-only GitHub repository assistant that uses FastAPI, Streamlit and SQLite FTS5 retrieval to answer questions about source code. It combines RAG, bounded agentic tool calling, and commit-pinned citations. The project taught me to care as much about trustworthy answers as useful ones.',
     tags: ['Python', 'FastAPI', 'RAG', 'Agentic AI'],
+    demo: {
+      intro: 'A closer look at the actual Streamlit application — from exploring a repository to answers with verifiable source citations.',
+      media: [
+        {
+          type: 'video',
+          src: '/demos/github-ai-demo.mp4',
+          poster: '/demos/github-ai-poster.jpg',
+          alt: '19-second walkthrough of the GitHub Repository Analyzer',
+          caption: '00 / Watch the GitHub AI demo (19 seconds)',
+        },
+        {
+          type: 'image',
+          src: 'https://raw.githubusercontent.com/CoolNicolas/github-repository-analyzer/main/docs/screenshots/01-repository-overview.png',
+          alt: 'Repository Analyzer screen showing a GitHub URL input and repository information for Flask',
+          caption: '01 / Repository inspection',
+        },
+        {
+          type: 'image',
+          src: 'https://raw.githubusercontent.com/CoolNicolas/github-repository-analyzer/main/docs/screenshots/04-rag-answer-and-citations.png',
+          alt: 'RAG question answer with source-code snippets and commit-pinned citations',
+          caption: '02 / Evidence-backed answers',
+        },
+        {
+          type: 'image',
+          src: 'https://raw.githubusercontent.com/CoolNicolas/github-repository-analyzer/main/docs/screenshots/05-agentic-answer.png',
+          alt: 'Read-only agent interface answering a repository question with source citations',
+          caption: '03 / Read-only AI agent',
+        },
+        {
+          type: 'image',
+          src: 'https://raw.githubusercontent.com/CoolNicolas/github-repository-analyzer/main/docs/screenshots/02-source-files.png',
+          alt: 'Source file browser listing selected files from a GitHub repository',
+          caption: '04 / Source file browser',
+        },
+        {
+          type: 'image',
+          src: 'https://raw.githubusercontent.com/CoolNicolas/github-repository-analyzer/main/docs/screenshots/03-query-modes.png',
+          alt: 'Application modes for analyzing, asking questions, and invoking the read-only agent',
+          caption: '05 / Analysis modes',
+        },
+      ],
+    },
     link: {
       label: 'Explore the repository',
       href: 'https://github.com/CoolNicolas/github-repository-analyzer',
@@ -81,6 +151,16 @@ export const milestones: Milestone[] = [
     story:
       'Using Gymnasium and PPO, I trained and evaluated agents in LunarLander-v3. An early reward experiment caused the agent to hover rather than land, which showed me how an impressive score can hide the wrong behavior. I refined the reward function and measured actual landing success.',
     tags: ['Reinforcement Learning', 'Python', 'PPO'],
+    demo: {
+      intro: 'Watch the trained LunarLander agent attempt a controlled landing in the Gymnasium simulation.',
+      media: [{
+        type: 'video',
+        src: '/demos/lunar-lander-demo.mp4',
+        poster: '/demos/lunar-lander-poster.jpg',
+        alt: 'Recorded demonstration of the Lunar Lander reinforcement-learning agent',
+        caption: '01 / Lunar Lander demo (14 seconds)',
+      }],
+    },
     link: {
       label: 'Explore my GitHub',
       href: 'https://github.com/CoolNicolas',
@@ -108,6 +188,16 @@ export const milestones: Milestone[] = [
     story:
       'I built a poker training application with Django, JavaScript, and SQLite. Working across the interface, application logic, and persistence layer gave me a much better understanding of how the pieces of a complete product fit together.',
     tags: ['Django', 'JavaScript', 'SQLite'],
+    demo: {
+      intro: 'A short tour of the Django-powered Poker Trainer interface and training features.',
+      media: [{
+        type: 'video',
+        src: '/demos/poker-trainer-demo.mp4',
+        poster: '/demos/poker-trainer-poster.jpg',
+        alt: 'Screen recording showing the Poker Trainer web application',
+        caption: '01 / Poker Trainer demo (29 seconds)',
+      }],
+    },
     link: {
       label: 'Explore my GitHub',
       href: 'https://github.com/CoolNicolas',
@@ -124,6 +214,12 @@ export const milestones: Milestone[] = [
     story:
       'Through CS50 Web Programming with Python and JavaScript, I worked on Django applications including Commerce and Wiki. It was an important step from writing individual programs to building complete web experiences.',
     tags: ['Python', 'Django', 'Web Development'],
+    certificate: {
+      src: '/certificates/cs50-web-programming.png',
+      alt: 'CS50 certificate awarded to Nicolas Lin for completing Web Programming with Python and JavaScript, including six projects, in 2026',
+      caption: 'CS50’s Web Programming with Python and JavaScript · 2026',
+      verifyUrl: 'https://cs50.harvard.edu/certificates/4b74edf7-2f25-4ddf-af59-567ec4f6da7f',
+    },
     link: {
       label: 'About the course',
       href: 'https://cs50.harvard.edu/web/',

@@ -77,6 +77,9 @@ button:focus-visible, a:focus-visible { outline: 2px solid #8b6540; outline-offs
 .hero-personal { font: 700 9px var(--caps); letter-spacing: .16em; color: #8b8172; }
 .hero-personal span { padding: 0 8px; }
 
+.hero-credentials { display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 0 0 24px; color: #736552; font-size: 12px; font-weight: 500; letter-spacing: .02em; }
+.hero-credentials span { border-bottom: 1px solid #d9d4cb; padding-bottom: 7px; }
+
 /* Main journey - front and center */
 .journey-section { background: #ffffff; padding: 113px 0 120px; border-top: 1px solid #e5e3dd; }
 .section-kicker { display: flex; align-items: center; gap: 14px; font: 700 10px var(--caps); letter-spacing: .2em; color: #736552; }
@@ -246,25 +249,56 @@ button:focus-visible, a:focus-visible { outline: 2px solid #8b6540; outline-offs
   .milestone-date { font-size: 8px; }
   .timeline-footnote { margin-left: 75px; padding-left: 15px; }
 }
+
+/* Project visuals — a quiet editorial gallery inside the journey */
+.milestone-demo-hint { display: inline-flex; align-items: center; gap: 7px; margin-top: 17px; color: #8b7358; font: 700 9px var(--caps); letter-spacing: .14em; }
+.project-demo { border-top: 1px solid #ddd9d2; margin: 26px 0 25px; padding-top: 26px; width: 100%; max-width: 840px; }
+.demo-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 15px; }
+.demo-kicker { display: block; color: #8a7660; font: 700 9px var(--caps); letter-spacing: .18em; margin-bottom: 8px; }
+.demo-header h4 { font: 400 clamp(23px, 2.25vw, 31px)/1.25 var(--serif); letter-spacing: -.04em; margin: 0; }
+.demo-header h4 em { font-weight: 400; }
+.demo-counter { flex: none; font: 700 10px var(--caps); color: #81776d; letter-spacing: .12em; padding-bottom: 4px; }
+.demo-description { font: 400 12px/1.8 var(--sans); color: #6a6660; max-width: 600px; margin: 14px 0 20px; }
+.demo-stage { background: #1a1b1f; border: 1px solid #292929; aspect-ratio: 1.62; overflow: hidden; display: grid; place-items: center; }
+.demo-image-link { position: relative; display: grid; place-items: center; width: 100%; height: 100%; overflow: hidden; }
+.demo-main-media { width: 100%; height: 100%; object-fit: contain; display: block; }
+.demo-open-photo { position: absolute; right: 12px; bottom: 12px; background: #f7f6f2ee; display: inline-flex; align-items: center; gap: 6px; padding: 9px 11px; color: #272521; font: 700 9px var(--caps); letter-spacing: .09em; transition: background .2s; }
+.demo-image-link:hover .demo-open-photo { background: #fff; }
+.demo-caption-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+.demo-caption { font: 500 12px var(--sans); color: #393833; }
+.demo-navigation { display: flex; gap: 7px; }
+.demo-arrow { display: grid; place-items: center; background: transparent; width: 36px; height: 36px; border: 1px solid #d8d4cc; color: #2a2927; transition: border-color .18s, background .18s; }
+.demo-arrow:hover { border-color: #1f1e1b; background: #edeae4; }
+.demo-thumbnails { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 16px; }
+.demo-thumbnail { background: #1a1b1f; padding: 0; border: 2px solid transparent; position: relative; aspect-ratio: 1.5; overflow: hidden; opacity: .64; transition: border-color .18s, opacity .18s; }
+.demo-thumbnail:hover, .demo-thumbnail.is-current { opacity: 1; }
+.demo-thumbnail.is-current { border-color: #9f8b70; }
+.demo-thumbnail img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+.demo-thumb-number { position: absolute; bottom: 0; right: 0; padding: 3px 5px; color: #eeeae2; background: #171717c9; font: 700 8px var(--caps); }
+.demo-thumbnail-video { display: grid; place-items: center; color: #fff; font: 700 10px var(--caps); }
+.demo-live-link { display: inline-flex; align-items: center; gap: 7px; margin-top: 15px; font: 700 11px var(--sans); border-bottom: 1px solid currentColor; padding-bottom: 4px; }
+@media (max-width: 600px) {
+  .hero-credentials { gap: 8px 13px; font-size: 11px; }
+  .demo-header h4 { font-size: 24px; }
+  .demo-description { font-size: 11px; }
+  .demo-caption { font-size: 10px; }
+  .demo-thumbnails { gap: 4px; }
+  .demo-open-photo { font-size: 8px; right: 7px; bottom: 7px; padding: 7px; }
+  .project-demo { margin-top: 20px; padding-top: 20px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
 
-
-
-
-.hero-credentials {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 22px;
-  margin: 18px 0 24px;
-  color: #736552;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-}
-
-.hero-credentials span {
-  border-bottom: 1px solid #d9d4cb;
-  padding-bottom: 7px;
+/* CS50 certificate — opens directly inside its roadmap milestone. */
+.milestone-certificate { max-width: 840px; margin: 0 0 25px; border-top: 1px solid #ddd9d2; padding-top: 22px; }
+.certificate-kicker { color: #8a7660; font: 700 9px var(--caps); letter-spacing: .18em; margin-bottom: 15px; }
+.milestone-certificate img { display: block; width: 100%; height: auto; border: 1px solid #e0dbd4; background: white; }
+.milestone-certificate figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 18px; padding-top: 14px; font: 500 11px/1.6 var(--sans); color: #777068; }
+.milestone-certificate figcaption a { display: inline-flex; align-items: center; gap: 5px; color: #302b25; border-bottom: 1px solid #bbb2a6; padding-bottom: 3px; }
+.demo-playback-note { display: block; color: #8b8175; font: 700 9px/1.8 var(--caps); letter-spacing: .12em; margin-top: 5px; }
+@media (max-width: 600px) {
+  .milestone-certificate { margin-top: 21px; padding-top: 20px; }
+  .milestone-certificate figcaption { font-size: 10px; }
 }
